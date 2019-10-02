@@ -5,6 +5,7 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
+import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.settings.Settings;
@@ -22,11 +23,14 @@ public class Elasticsearch3PutMappingDemo {
     public static void main(String[] args) throws IOException {
         RestHighLevelClient client = new RestHighLevelClient(
                 RestClient.builder(
-                        new HttpHost("192.168.142.134", 9200, "http"),
-                        new HttpHost("192.168.142.133", 9200, "http")));
+                        new HttpHost("192.168.233.133", 9200, "http"),
+                        new HttpHost("192.168.233.133", 9201, "http"),
+                        new HttpHost("192.168.233.133", 9202, "http")
+                ));
 
-
-        PutMappingRequest request = new PutMappingRequest ("twitter5");
+        //库名(index)：twitter3
+        PutMappingRequest request = new PutMappingRequest("twitter3");
+        //表名(type)：tweet
         request.type("tweet");
 
         //设置超时
@@ -38,12 +42,11 @@ public class Elasticsearch3PutMappingDemo {
         //同文档创建 可 json, 可 map, 可 XContentBuilder
         mappingByJsonStr(request);
 
-        PutMappingResponse response = client.indices().putMapping(request);
+        PutMappingResponse response = client.indices().putMapping(request, RequestOptions.DEFAULT);
         //client.indices().putMappingAsync(); 异步请求
 
         boolean acknowledged = response.isAcknowledged();
         System.out.println("指示是否所有节点都已确认请求:" + acknowledged);
-
 
         client.close();
     }
@@ -55,6 +58,12 @@ public class Elasticsearch3PutMappingDemo {
                         "  \"properties\": {\n" +
                         "    \"message\": {\n" +
                         "      \"type\": \"text\"\n" +
+                        "    },\n" +
+                        "    \"name\": {\n" +
+                        "      \"type\": \"text\"\n" +
+                        "    },\n" +
+                        "    \"phone\": {\n" +
+                        "      \"type\": \"long\"\n" +
                         "    }\n" +
                         "  }\n" +
                         "}",
@@ -72,7 +81,7 @@ public class Elasticsearch3PutMappingDemo {
         request.source(jsonMap);
     }
 
-    public static void mappingByBuilder (PutMappingRequest request) throws IOException {
+    public static void mappingByBuilder(PutMappingRequest request) throws IOException {
         XContentBuilder builder = XContentFactory.jsonBuilder();
         builder.startObject();
         {
