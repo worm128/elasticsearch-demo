@@ -10,14 +10,17 @@ import org.elasticsearch.common.unit.TimeValue;
 
 import java.io.IOException;
 
+/**
+ * 删除索引
+ */
 public class Elasticsearch2DeleteDemo {
 
     public static void main(String[] args) throws IOException {
         RestHighLevelClient client = new RestHighLevelClient(
                 RestClient.builder(
-                        new HttpHost("192.168.233.133", 9200, "http"),
-                        new HttpHost("192.168.233.133", 9201, "http"),
-                        new HttpHost("192.168.233.133", 9202, "http")
+                        new HttpHost("192.168.50.130", 9200, "http"),
+                        new HttpHost("192.168.50.130", 9201, "http"),
+                        new HttpHost("192.168.50.130", 9202, "http")
                 ));
 
 

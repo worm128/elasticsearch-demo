@@ -15,14 +15,17 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 索引导入数据
+ */
 public class Elasticsearch3PutMappingDemo {
 
     public static void main(String[] args) throws IOException {
         RestHighLevelClient client = new RestHighLevelClient(
                 RestClient.builder(
-                        new HttpHost("192.168.233.133", 9200, "http"),
-                        new HttpHost("192.168.233.133", 9201, "http"),
-                        new HttpHost("192.168.233.133", 9202, "http")
+                        new HttpHost("192.168.50.130", 9200, "http"),
+                        new HttpHost("192.168.50.130", 9201, "http"),
+                        new HttpHost("192.168.50.130", 9202, "http")
                 ));
 
         //库名(index)：twitter3

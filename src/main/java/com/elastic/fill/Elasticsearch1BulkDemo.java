@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 批量请求
+ * 批量操作索引
  */
 public class Elasticsearch1BulkDemo {
 
@@ -44,10 +44,13 @@ public class Elasticsearch1BulkDemo {
 
         RestHighLevelClient client = new RestHighLevelClient(
                 RestClient.builder(
-                        new HttpHost("192.168.233.133", 9200, "http"),
-                        new HttpHost("192.168.233.133", 9201, "http"),
-                        new HttpHost("192.168.233.133", 9202, "http")
+                        new HttpHost("192.168.50.130", 9200, "http"),
+                        new HttpHost("192.168.50.130", 9201, "http"),
+                        new HttpHost("192.168.50.130", 9202, "http")
                 ));
+
+        String indexName = "twitter2";
+        String typeName ="twitter";
 
         BulkRequest request = new BulkRequest();
         //新增数据
@@ -55,8 +58,8 @@ public class Elasticsearch1BulkDemo {
         tweetMod.setPhone(15918837225L);
         tweetMod.setName("张三");
         tweetMod.setMessage("测试数据234324");
-        IndexRequest indexRequest = addData("twitter3", "tweet", tweetMod);
-        //request.add(indexRequest);
+        IndexRequest indexRequest = addData(indexName, typeName, tweetMod);
+        request.add(indexRequest);
 
         //更新数据
         tweetMod = new TweetMod();
@@ -64,16 +67,16 @@ public class Elasticsearch1BulkDemo {
         tweetMod.setPhone(15918837225L);
         tweetMod.setName("张三");
         tweetMod.setMessage("修改1");
-        UpdateRequest updateRequest = updateData("twitter3", "tweet", tweetMod);
+        UpdateRequest updateRequest = updateData(indexName, typeName, tweetMod);
         //request.add(updateRequest);
 
         //删除数据
         tweetMod = new TweetMod();
         tweetMod.setName("张");
-        List<TweetMod> list = search(client, "twitter3", "tweet", tweetMod);
+        List<TweetMod> list = search(client, indexName, typeName, tweetMod);
         for (TweetMod t : list) {
-            DeleteRequest del = new DeleteRequest("twitter3", "tweet", t.getId());
-            request.add(del);
+            DeleteRequest del = new DeleteRequest(indexName, typeName, t.getId());
+            //request.add(del);
         }
 
         request.timeout(TimeValue.timeValueMinutes(2));
