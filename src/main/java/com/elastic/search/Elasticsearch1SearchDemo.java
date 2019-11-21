@@ -1,30 +1,23 @@
-package com.zyj.search;
+package com.elastic.search;
 
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
-import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
- *  高亮
+ *  查询所有
  */
-public class Elasticsearch3SearchDemo {
+public class Elasticsearch1SearchDemo {
 
     public static void main(String[] args) throws IOException {
 
@@ -34,22 +27,10 @@ public class Elasticsearch3SearchDemo {
                         new HttpHost("192.168.142.133", 9200, "http")));
 
         SearchRequest searchRequest = new SearchRequest();
+
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-
-        searchSourceBuilder.query(QueryBuilders.matchQuery("address", "mill"));
-
-        HighlightBuilder highlightBuilder = new HighlightBuilder();
-        HighlightBuilder.Field highlightTitle =
-                new HighlightBuilder.Field("address");
-
-        /*
-        *  <tt>unified</tt>, <tt>plain</tt> and <tt>fvj</tt>.
-        *  默认 unified
-        * */
-        highlightTitle.highlighterType("unified");
-        highlightBuilder.field(highlightTitle);
-
-        searchSourceBuilder.highlighter(highlightBuilder);
+        searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+        searchSourceBuilder.size(3);
         searchRequest.source(searchSourceBuilder);
 
         SearchResponse searchResponse =  client.search(searchRequest);
@@ -76,18 +57,9 @@ public class Elasticsearch3SearchDemo {
 //            System.out.println(score);
 
             String sourceAsString = hit.getSourceAsString();
+            // hit.getSourceAsMap()
             System.out.println(sourceAsString);
         }
-
-
-        for (SearchHit hit : hits.getHits()) {
-            Map<String, HighlightField> highlightFields = hit.getHighlightFields();
-            HighlightField highlight = highlightFields.get("address");
-            Text[] fragments = highlight.fragments();
-            String fragmentString = fragments[0].string();
-            System.out.println(fragmentString);
-        }
-
 
         client.close();
     }

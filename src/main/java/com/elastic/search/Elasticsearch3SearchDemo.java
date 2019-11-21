@@ -1,25 +1,27 @@
-package com.zyj.search;
+package com.elastic.search;
 
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
- *  查询
+ *  高亮
  */
-public class Elasticsearch2SearchDemo {
+public class Elasticsearch3SearchDemo {
 
     public static void main(String[] args) throws IOException {
 
@@ -30,35 +32,21 @@ public class Elasticsearch2SearchDemo {
 
         SearchRequest searchRequest = new SearchRequest();
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        //返回编号为20的帐户：
 
-      //   searchSourceBuilder.query(QueryBuilders.matchQuery("account_number","20"));
+        searchSourceBuilder.query(QueryBuilders.matchQuery("address", "mill"));
 
+        HighlightBuilder highlightBuilder = new HighlightBuilder();
+        HighlightBuilder.Field highlightTitle =
+                new HighlightBuilder.Field("address");
 
-        // bool查询返回地址中包含“mill”和“lane”的所有帐户
-//        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-//        boolQueryBuilder.must(QueryBuilders.matchQuery("address", "mill"));
-//        boolQueryBuilder.must(QueryBuilders.matchQuery("address", "lane"));
-//        searchSourceBuilder.query(boolQueryBuilder);
+        /*
+        *  <tt>unified</tt>, <tt>plain</tt> and <tt>fvj</tt>.
+        *  默认 unified
+        * */
+        highlightTitle.highlighterType("unified");
+        highlightBuilder.field(highlightTitle);
 
-         // 返回所有40岁 状态不是 ID
-//        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-//        boolQueryBuilder.must(QueryBuilders.matchQuery("age", 40));
-//        boolQueryBuilder.mustNot(QueryBuilders.matchQuery("state", "ID"));
-//        searchSourceBuilder.query(boolQueryBuilder);
-
-        //返回所有余额 20000-3000之间的
-        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery("balance");
-        rangeQueryBuilder.gt(20000);
-        rangeQueryBuilder.lt(30000);
-        boolQueryBuilder.filter(rangeQueryBuilder);
-        searchSourceBuilder.query(boolQueryBuilder);
-
-
-
-
-
+        searchSourceBuilder.highlighter(highlightBuilder);
         searchRequest.source(searchSourceBuilder);
 
         SearchResponse searchResponse =  client.search(searchRequest);
@@ -87,6 +75,16 @@ public class Elasticsearch2SearchDemo {
             String sourceAsString = hit.getSourceAsString();
             System.out.println(sourceAsString);
         }
+
+
+        for (SearchHit hit : hits.getHits()) {
+            Map<String, HighlightField> highlightFields = hit.getHighlightFields();
+            HighlightField highlight = highlightFields.get("address");
+            Text[] fragments = highlight.fragments();
+            String fragmentString = fragments[0].string();
+            System.out.println(fragmentString);
+        }
+
 
         client.close();
     }

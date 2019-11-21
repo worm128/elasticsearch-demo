@@ -1,4 +1,4 @@
-package com.zyj.model;
+package com.elastic.model;
 
 import lombok.Data;
 

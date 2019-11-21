@@ -1,4 +1,4 @@
-package com.zyj.search;
+package com.elastic.search;
 
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.search.SearchRequest;
@@ -6,7 +6,9 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -15,9 +17,9 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import java.io.IOException;
 
 /**
- *  查询所有
+ *  查询
  */
-public class Elasticsearch1SearchDemo {
+public class Elasticsearch2SearchDemo {
 
     public static void main(String[] args) throws IOException {
 
@@ -27,10 +29,36 @@ public class Elasticsearch1SearchDemo {
                         new HttpHost("192.168.142.133", 9200, "http")));
 
         SearchRequest searchRequest = new SearchRequest();
-
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(QueryBuilders.matchAllQuery());
-        searchSourceBuilder.size(3);
+        //返回编号为20的帐户：
+
+      //   searchSourceBuilder.query(QueryBuilders.matchQuery("account_number","20"));
+
+
+        // bool查询返回地址中包含“mill”和“lane”的所有帐户
+//        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+//        boolQueryBuilder.must(QueryBuilders.matchQuery("address", "mill"));
+//        boolQueryBuilder.must(QueryBuilders.matchQuery("address", "lane"));
+//        searchSourceBuilder.query(boolQueryBuilder);
+
+         // 返回所有40岁 状态不是 ID
+//        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+//        boolQueryBuilder.must(QueryBuilders.matchQuery("age", 40));
+//        boolQueryBuilder.mustNot(QueryBuilders.matchQuery("state", "ID"));
+//        searchSourceBuilder.query(boolQueryBuilder);
+
+        //返回所有余额 20000-3000之间的
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery("balance");
+        rangeQueryBuilder.gt(20000);
+        rangeQueryBuilder.lt(30000);
+        boolQueryBuilder.filter(rangeQueryBuilder);
+        searchSourceBuilder.query(boolQueryBuilder);
+
+
+
+
+
         searchRequest.source(searchSourceBuilder);
 
         SearchResponse searchResponse =  client.search(searchRequest);
@@ -57,7 +85,6 @@ public class Elasticsearch1SearchDemo {
 //            System.out.println(score);
 
             String sourceAsString = hit.getSourceAsString();
-            // hit.getSourceAsMap()
             System.out.println(sourceAsString);
         }
 

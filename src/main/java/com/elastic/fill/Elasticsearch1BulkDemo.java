@@ -1,12 +1,9 @@
-package com.zyj.fill;
+package com.elastic.fill;
 
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPObject;
-import com.alibaba.fastjson.TypeReference;
-import com.zyj.model.TweetMod;
-import org.apache.commons.codec.binary.StringUtils;
+import com.elastic.model.TweetMod;
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.DocWriteResponse;
