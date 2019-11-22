@@ -24,16 +24,15 @@ public class Elasticsearch2DeleteDemo {
                 ));
 
 
-        DeleteIndexRequest request = new DeleteIndexRequest ("twitter3");
-
+        DeleteIndexRequest request = new DeleteIndexRequest("twitter3");
 
         //设置超时
         request.timeout(TimeValue.timeValueMinutes(2));
 
         //超时连接到主节点的时间
         request.masterNodeTimeout(TimeValue.timeValueMinutes(1));
-        //在创建索引API返回响应之前要等待的活动分片副本数
 
+        //在创建索引API返回响应之前要等待的活动分片副本数
         DeleteIndexResponse response = client.indices().delete(request, RequestOptions.DEFAULT);
         boolean acknowledged = response.isAcknowledged();
         System.out.println("指示是否所有节点都已确认请求:" + acknowledged);

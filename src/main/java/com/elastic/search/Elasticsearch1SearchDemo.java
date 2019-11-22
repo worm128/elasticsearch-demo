@@ -23,8 +23,10 @@ public class Elasticsearch1SearchDemo {
 
         RestHighLevelClient client = new RestHighLevelClient(
                 RestClient.builder(
-                        new HttpHost("192.168.142.134", 9200, "http"),
-                        new HttpHost("192.168.142.133", 9200, "http")));
+                        new HttpHost("192.168.50.130", 9200, "http"),
+                        new HttpHost("192.168.50.130", 9201, "http"),
+                        new HttpHost("192.168.50.130", 9202, "http")
+                ));
 
         SearchRequest searchRequest = new SearchRequest();
 

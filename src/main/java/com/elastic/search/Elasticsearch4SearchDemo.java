@@ -16,7 +16,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import java.io.IOException;
 
 /**
- *  高亮
+ *  聚合
  */
 public class Elasticsearch4SearchDemo {
 
@@ -24,8 +24,10 @@ public class Elasticsearch4SearchDemo {
 
         RestHighLevelClient client = new RestHighLevelClient(
                 RestClient.builder(
-                        new HttpHost("127.0.0.1", 9200, "http")
-                 ));
+                        new HttpHost("192.168.50.130", 9200, "http"),
+                        new HttpHost("192.168.50.130", 9201, "http"),
+                        new HttpHost("192.168.50.130", 9202, "http")
+                ));
 
 
         SearchRequest searchRequest = new SearchRequest();

@@ -82,7 +82,7 @@ public class Elasticsearch1BulkDemo {
         request.timeout(TimeValue.timeValueMinutes(2));
         request.waitForActiveShards(0);
 
-        BulkResponse response = client.bulk(request, RequestOptions.DEFAULT); //异步同 添加一样
+        BulkResponse response = client.bulk(request, RequestOptions.DEFAULT); //异步bulkAsync/同步bulk
 
         for (BulkItemResponse bulkItemResponse : response) {
             //            bulkItemResponse.isFailed()
@@ -123,8 +123,8 @@ public class Elasticsearch1BulkDemo {
         index.source(json, XContentType.JSON);
 
         //=============== 方式二 ====================
-        index.source(XContentType.JSON, "message", tweetMod.getMessage(), "name", tweetMod.getName(),
-                "phone", tweetMod.getPhone());
+//        index.source(XContentType.JSON, "message", tweetMod.getMessage(), "name", tweetMod.getName(),
+//                "phone", tweetMod.getPhone());
 
         return index;
     }
