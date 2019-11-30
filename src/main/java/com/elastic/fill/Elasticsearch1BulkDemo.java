@@ -49,8 +49,8 @@ public class Elasticsearch1BulkDemo {
                         new HttpHost("192.168.50.130", 9202, "http")
                 ));
 
-        String indexName = "twitter2";
-        String typeName ="twitter";
+        String indexName = "twitter3";
+        String typeName ="tweet";
 
         BulkRequest request = new BulkRequest();
         //新增数据
