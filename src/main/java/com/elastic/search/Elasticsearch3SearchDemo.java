@@ -3,6 +3,7 @@ package com.elastic.search;
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.text.Text;
@@ -51,7 +52,7 @@ public class Elasticsearch3SearchDemo {
         searchSourceBuilder.highlighter(highlightBuilder);
         searchRequest.source(searchSourceBuilder);
 
-        SearchResponse searchResponse =  client.search(searchRequest);
+        SearchResponse searchResponse =  client.search(searchRequest, RequestOptions.DEFAULT);
         RestStatus status = searchResponse.status();
         TimeValue took = searchResponse.getTook();
         Boolean terminatedEarly = searchResponse.isTerminatedEarly();
